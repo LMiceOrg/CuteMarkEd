@@ -78,7 +78,7 @@ macx {
         hunspell/spellchecker_macx.cpp
 }
 
-unix {
+unix:!macx {
     SOURCES += \
         hunspell/spellchecker_unix.cpp
 }
@@ -234,7 +234,7 @@ unix:!macx {
 }
 
 macx {
-  LIBS += -lhunspell
+  #LIBS += -lhunspell
 }
 
 win32:INCLUDEPATH += $$PWD/../3rdparty/hunspell/src
@@ -292,4 +292,13 @@ unix:!macx {
 
    INSTALLS += target desktop icon16 icon32 icon48 icon64 icon128 iconsvg
    message("The project will be installed in prefix $${PREFIX}")
+}
+
+macx {
+    message("$$(QTDIR)/bin/macdeployqt $$OUT_PWD/$$TARGET"".app")
+    QMAKE_POST_LINK += "$$(QTDIR)/bin/macdeployqt $$OUT_PWD/$$TARGET"".app"
+    #QMAKE_POST_LINK += "python   $$PWD/../osx_postbuild.py '$$OUT_PWD' '$$TARGET'  '$$(QTDIR)'"
+    LIBS += -L$$PWD/../3rdparty/discount
+    INCLUDEPATH += $$PWD/../3rdparty/hunspell/src
+    LIBS += -L$$PWD/../3rdparty/hunspell/src/hunspell/.libs/ -lhunspell-1.3
 }

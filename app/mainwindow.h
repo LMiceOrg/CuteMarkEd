@@ -124,6 +124,8 @@ private slots:
     void proxyConfigurationChanged();
     void markdownConverterChanged();
 
+    void on_actionHoldon_Preview_toggled(bool arg1);
+
 private:
     void setupUi();
     void setupActions();

@@ -167,7 +167,7 @@
      <x>0</x>
      <y>0</y>
      <width>850</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -290,6 +290,7 @@
     <addaction name="menuStyles"/>
     <addaction name="separator"/>
     <addaction name="actionOptions"/>
+    <addaction name="actionHoldon_Preview"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
@@ -736,6 +737,17 @@
    </property>
    <property name="text">
     <string>&amp;Diagram Support</string>
+   </property>
+  </action>
+  <action name="actionHoldon_Preview">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Holdon Preview</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+P</string>
    </property>
   </action>
  </widget>

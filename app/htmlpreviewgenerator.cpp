@@ -49,6 +49,10 @@ bool HtmlPreviewGenerator::isSupported(MarkdownConverter::ConverterOption option
 
 void HtmlPreviewGenerator::markdownTextChanged(const QString &text)
 {
+    extern bool g_holdon_preview;
+    if(g_holdon_preview)
+        return;
+
     // cut YAML header
     YamlHeaderChecker checker(text);
     QString actualText = checker.hasHeader() && options->isYamlHeaderSupportEnabled() ?
@@ -56,6 +60,7 @@ void HtmlPreviewGenerator::markdownTextChanged(const QString &text)
                           : text;
     // enqueue task to parse the markdown text and generate a new HTML document
     QMutexLocker locker(&tasksMutex);
+    tasks.clear();
     tasks.enqueue(actualText);
     bufferNotEmpty.wakeOne();
 }

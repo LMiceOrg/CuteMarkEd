@@ -33,6 +33,8 @@
 
 #include <QFile>
 #include <QRegularExpression>
+#include <QApplication>
+#include <QDir>
 
 HtmlTemplate::HtmlTemplate()
 {
@@ -99,10 +101,14 @@ QString HtmlTemplate::buildHtmlHeader(RenderOptions options) const
 
         // Add MathJax support for inline LaTeX Math
         if (options.testFlag(Template::MathInlineSupport)) {
-            header += "<script type=\"text/x-mathjax-config\">MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\\\(','\\\\)']]}});</script>";
+            header += "<script type=\"text/x-mathjax-config\">MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\\\(','\\\\)']]}});</script>\n";
         }
 
-        header += "<script type=\"text/javascript\" src=\"http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML\"></script>\n";
+        //header += "<script type=\"text/javascript\" src=\"http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML\"></script>\n";
+        header +=
+                "<script type=\"text/javascript\" src=\""
+                +qApp->applicationDirPath()+  "/../Resources/MathJax-2.6-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML\"></script>\n";
+
     }
 
     // add Highlight.js script to HTML header
@@ -115,15 +121,41 @@ QString HtmlTemplate::buildHtmlHeader(RenderOptions options) const
     // add mermaid.js script to HTML header
     if (options.testFlag(Template::DiagramSupport)) {
         header += "<link rel=\"stylesheet\" href=\"qrc:/scripts/mermaid/mermaid.css\">\n";
-        header += "<script src=\"qrc:/scripts/mermaid/mermaid.full.min.js\"></script>\n";
+        header += "<script src=\"qrc:/scripts/mermaid/mermaid.full.min.js\"></script>\n"
+                "<script>var config = {\n"
+                "startOnLoad:true,\n"
+                "cloneCssStyles:true,\n"
+                "arrowMarkerAbsolute:true,\n"
+                "flowchart:{\n"
+                "        useMaxWidth:false,\n"
+                "        htmlLabels:true\n"
+                "},\n"
+                "sequenceDiagram: {\n"
+                "    useMaxWidth:false,\n"
+                "    htmlLabels:true\n"
+                "},\n"
+                "gantt:{}\n"
+                "};\n"
+                "mermaid.initialize(config);\n"
+                "</script>\n";
     }
 
     return header;
 }
 
+//#include <QDebug>
+extern QString g_absolutePath;
 void HtmlTemplate::convertDiagramCodeSectionToDiv(QString &body) const
 {
     static const QRegularExpression rx(QStringLiteral("<pre><code class=\"mermaid\">(.*?)</code></pre>"),
                                        QRegularExpression::DotMatchesEverythingOption);
     body.replace(rx, QStringLiteral("<div class=\"mermaid\">\n\\1</div>"));
+
+    static const QRegularExpression rxpdf(QStringLiteral("<pre><code class=\"pdf\">\\s*([%#/\\w]+)\\s+(.*?)</code></pre>"),
+                                       QRegularExpression::DotMatchesEverythingOption);
+    body.replace(rxpdf, QString("<iframe src=\"")
+                                       + qApp->applicationDirPath() +
+                                       "/../Resources/pdfjs-1.4.20-dist/web/viewer.html?file=\\2&embedded=true\" style=\"width:100%;height:100%\">\n</iframe>");
+    body.replace("viewer.html?file=./", "viewer.html?file="+g_absolutePath+"/");
+//    qDebug()<<"HtmlTemplate:"<<g_absolutePath;
 }

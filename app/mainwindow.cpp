@@ -791,6 +791,8 @@ void MainWindow::addJavaScriptObject()
     ui->webView->page()->mainFrame()->addToJavaScriptWindowObject("synchronizer", viewSynchronizer);
 }
 
+QString g_absolutePath;
+
 bool MainWindow::load(const QString &fileName)
 {
     if (!QFile::exists(fileName)) {
@@ -802,6 +804,10 @@ bool MainWindow::load(const QString &fileName)
     if (!file.open(QFile::ReadOnly | QIODevice::Text)) {
         return false;
     }
+
+    // set current file path
+    QFileInfo info(file);
+    g_absolutePath = info.absoluteDir().absolutePath();
 
     // read content from file
     QByteArray content = file.readAll();
@@ -1274,4 +1280,12 @@ QString MainWindow::stylePath(const QString &styleName)
 {
     QString suffix = options->isSourceAtSingleSizeEnabled() ? "" : "+";
     return QString(":/theme/%1%2.txt").arg(styleName).arg(suffix);
+}
+
+bool g_holdon_preview = false;
+void MainWindow::on_actionHoldon_Preview_toggled(bool arg1)
+{
+    g_holdon_preview = arg1;
+    if(!g_holdon_preview)
+        plainTextChanged();
 }

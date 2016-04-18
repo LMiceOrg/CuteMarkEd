@@ -77,7 +77,7 @@ HEADERS += \
 #
 # Add search paths below /usr/local for Mac OSX
 #
-macx:INCLUDEPATH += /usr/local/include
+macx:INCLUDEPATH += /usr/local/include $$PWD/../3rdparty/discount
 
 #
 # JSON configuration library
