@@ -91,6 +91,10 @@ QString HtmlTemplate::buildHtmlHeader(RenderOptions options) const
 {
     QString header;
 
+    header += "<link rel=\"stylesheet\" href=\""
+            +qApp->applicationDirPath()+
+            "/../Resources/font-awesome-4.6.1/css/font-awesome.min.css\">";
+
     // add javascript for scrollbar synchronization
     if (options.testFlag(Template::ScrollbarSynchronization)) {
         header += "<script type=\"text/javascript\">window.onscroll = function() { synchronizer.webViewScrolled(); }; </script>\n";
@@ -100,9 +104,9 @@ QString HtmlTemplate::buildHtmlHeader(RenderOptions options) const
     if (options.testFlag(Template::MathSupport)) {
 
         // Add MathJax support for inline LaTeX Math
-        if (options.testFlag(Template::MathInlineSupport)) {
+//        if (options.testFlag(Template::MathInlineSupport)) {
             header += "<script type=\"text/x-mathjax-config\">MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\\\(','\\\\)']]}});</script>\n";
-        }
+//        }
 
         //header += "<script type=\"text/javascript\" src=\"http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML\"></script>\n";
         header +=
